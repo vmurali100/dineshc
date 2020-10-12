@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="displayAllUsers()">Display All Users</button>
+    <button onclick="deleteLastValue()">Delete Last Value</button>
+    <button onclick="deleteFirstValue()">Delete First Value</button>
+    <hr>
+    <div id="demo"></div>
+    <script>
+      var users = ["Murali", "Krishna", "Ram","Ravi","Sam"]; // [ ] Indicates an Empty Array
+      
+      function displayAllUsers() {
+          var results = ""
+          users.forEach(function (val){
+            results= results+val+"<br>"
+          })
+          document.getElementById("demo").innerHTML = results
+          
+      }
+
+      function deleteLastValue() {
+          users.pop()
+          displayAllUsers()
+      }
+
+      function deleteFirstValue() {
+          users.shift()
+          displayAllUsers()
+      }
+    </script>
+</body>
+</html>
