@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Objects Can be Created In 3 ways
+        // 1. Literal Way Of Creating An Object
+        var person = {
+            fname:"Murali"
+        }
+        // 2. Creating On Object With Instance 
+        var myPerson = new Object()  // Built in Constructor Created By Javascript
+
+        // 3. Creating An Object with Constuctor Function
+
+        function Person(fname,lname) { // Constuctor Function Created Dev
+            this.fname = fname;
+            this.lname = lname
+        }
+        var myPerson2 = new Person("Murali","Krishna");
+
+        console.log(person)
+        console.log(myPerson)
+        console.log(myPerson2)
+    </script>
+</body>
+</html>

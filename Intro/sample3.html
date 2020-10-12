@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="demo"></div>
+    <script>
+        var person = {
+            fname:"Murali",
+            lname:"Krishna",
+            email:"murali@gmail.com",
+        }
+        person.city="Bangalore" // Adding a Property with .notation
+        person["state"]="Karnataka" // Adding a Property with [] notation
+        //  document.write(person['fname'])
+        // document.write(person.fname+"<br>"+person.lname+"<br>"+person.email)
+        var results=""
+        for(a in person){
+            console.log(person[a])
+            results=results+person[a]+"<br>"
+        }
+
+        document.getElementById("demo").innerHTML = results
+    </script>
+</body>
+</html>

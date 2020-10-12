@@ -1,0 +1,4 @@
+Task Day1:
+1. Create top 10 Vollyboll Players List -(As An Objet) - In 3 Types
+2. Display Each Player details with Loop (for In loop) and Without Loop
+3. Each Player details has to be added after the Creating
