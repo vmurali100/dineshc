@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <label for="fname">First Name : </label>
+        <input type="text" name="" id="fname"> <br>
+        <label for="lname">Last Name : </label>
+        <input type="text" id="lname"> <br>
+        <label for="gender">Gender : </label>
+        <input type="radio" name="gender" value="Male"> Male
+        <input type="radio" name="gender" value="Female"> Female <br>
+        <label for="subject">Subjects :</label>
+        <input type="checkbox" name="subject" value="HTML"> HTML
+        <input type="checkbox" name="subject" value="CSS"> CSS
+        <input type="checkbox" name="subject" value="JS"> JS
+        <input type="checkbox" name="subject" value="ReactJS"> ReactJS <br>
+        <button onclick="getUserDetals()" type="button">Get User</button>
+       
+    </form>
+<hr>
+<ul>
+
+</ul>
+    <script>
+        var users = []
+        var radioButtons = document.getElementsByName("gender");
+        var allCheckBoxes = document.getElementsByName("subject")
+
+        function getUserDetals() {
+            var person = {
+                fname:document.getElementById("fname").value,
+                lname:document.getElementById("lname").value,
+                gender:null,
+                subjects:[]
+            }
+            // Getting Both Radio Buttons
+            
+            radioButtons.forEach(function (radio){
+                if(radio.checked){
+                    person.gender = radio.value
+                }
+            })
+            allCheckBoxes.forEach(function (element){
+                if(element.checked){
+                    person.subjects.push(element.value)
+                }
+            })
+            users.push(person) // Push Method will add a User Object to Users Array
+            clearForm(person) // Calling clearForm function TO Clear The input fields
+            displayUsersInArray() // this Function Will Display All Users In Array
+        }
+
+
+        function displayUsersInArray(){
+            document.querySelector("ul").innerHTML = ""
+            users.forEach(user => {
+                var element = document.createElement("li")
+                element.innerHTML = user.fname +" "+user.lname+" - "+user.gender +" - "+user.subjects
+                document.querySelector("ul").appendChild(element)
+            });
+
+            
+        }
+
+        function clearForm(obj) {
+            for(a in obj){
+                if(a!=="gender" && a !=="subjects"){
+                    document.getElementById(a).value = ""
+                }else if(a == "gender"){
+                    radioButtons.forEach(function (radio){
+                        radio.checked = false
+                    })
+                }else{
+                    allCheckBoxes.forEach(function (element){
+                        element.checked = false
+                    })
+                }
+
+            }
+        }
+    </script>
+</body>
+</html>
