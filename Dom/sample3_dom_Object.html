@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        span {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background: red;
+    color: white;
+    text-align: center;
+    margin-left: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#updateUserBtn{
+    display: none;
+}
+    </style>
 </head>
 <body>
     <form>
@@ -19,19 +35,34 @@
         <input type="checkbox" name="subject" value="CSS"> CSS
         <input type="checkbox" name="subject" value="JS"> JS
         <input type="checkbox" name="subject" value="ReactJS"> ReactJS <br>
-        <button onclick="getUserDetals()" type="button">Get User</button>
-       
+        <button onclick="getUserDetals()" type="button" id="getUserBtn">Get User</button>
+        <button id="updateUserBtn" onclick="updateUser()" type="button">Update User</button>
     </form>
 <hr>
 <ul>
 
 </ul>
     <script>
-        var users = []
+        var users = JSON.parse(localStorage.getItem("users"))
+        var gIndex=null
+        if (users == null) {
+            users = []
+        }else{
+            displayUsersInArray()
+        }
+        
         var radioButtons = document.getElementsByName("gender");
         var allCheckBoxes = document.getElementsByName("subject")
-
+        
         function getUserDetals() {
+           var person = getUserDetailsFromForm();
+            users.push(person) // Push Method will add a User Object to Users Array
+            localStorage.setItem("users",JSON.stringify(users))
+            clearForm(person) // Calling clearForm function TO Clear The input fields
+            displayUsersInArray() // this Function Will Display All Users In Array
+        }
+
+        function getUserDetailsFromForm() {
             var person = {
                 fname:document.getElementById("fname").value,
                 lname:document.getElementById("lname").value,
@@ -50,21 +81,19 @@
                     person.subjects.push(element.value)
                 }
             })
-            users.push(person) // Push Method will add a User Object to Users Array
-            clearForm(person) // Calling clearForm function TO Clear The input fields
-            displayUsersInArray() // this Function Will Display All Users In Array
+             return person
         }
 
 
         function displayUsersInArray(){
             document.querySelector("ul").innerHTML = ""
-            users.forEach(user => {
+            users.forEach((user,i) => {
                 var element = document.createElement("li")
-                element.innerHTML = user.fname +" "+user.lname+" - "+user.gender +" - "+user.subjects
+                element.setAttribute("onclick","editUser("+i+")")
+                element.innerHTML = user.fname +" "+user.lname+" - "+user.gender +" - "+user.subjects + "<span onclick='deleteUser("+i+")'> X </span>"
                 document.querySelector("ul").appendChild(element)
             });
-
-            
+          
         }
 
         function clearForm(obj) {
@@ -80,6 +109,63 @@
                         element.checked = false
                     })
                 }
+
+            }
+        }
+
+        function deleteUser(i) {
+            console.log("deleteUser called ",i)
+            users.splice(i,1)
+            localStorage.setItem("users",JSON.stringify(users))
+            displayUsersInArray()
+        }
+    
+        function editUser(i) {
+            swapBtns(true)
+            gIndex=i;
+            // display the User info in HTML Form
+            var editUser = users[i]
+            clearForm(editUser)
+            for (a in editUser) {
+                if( a !== "gender" && a !== "subjects"){
+                    document.getElementById(a).value = editUser[a]
+                }else if(a == "gender"){
+                    radioButtons.forEach(element=>{
+                        console.log(element.value)
+                        if(element.value == editUser[a]){
+                            element.checked = true
+                        }
+                    })
+                }else{
+                    allCheckBoxes.forEach(checkbox=>{
+                        editUser[a].forEach(val=>{
+                            
+                            if(checkbox.value == val){
+                                checkbox.checked=true
+                            }
+                        })
+
+                    })
+                }
+            }
+        }
+
+        function updateUser() {
+            var updatedUser = getUserDetailsFromForm();
+            users[gIndex] = updatedUser;
+            localStorage.setItem("users",JSON.stringify(users))
+            displayUsersInArray()
+            swapBtns(false)
+            clearForm(updatedUser)
+        }
+        function swapBtns(isEdit){
+            if(isEdit){
+                document.getElementById("updateUserBtn").style.display = "block"
+                document.getElementById("getUserBtn").style.display="none"
+
+            }else{
+                document.getElementById("updateUserBtn").style.display = "none"
+                document.getElementById("getUserBtn").style.display="block"
 
             }
         }
