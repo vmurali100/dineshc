@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asynchrounous Javascript And XML</title>
+</head>
+<body>
+    <button onclick="getData()">Get Data</button>
+    <script>
+        var allUsers = []
+        //gettin Gata through Ajax
+        function getData() {
+            var info = new XMLHttpRequest();
+            info.onreadystatechange = function () {
+                if(info.readyState == 4 && info.status == 200){
+                    allUsers = JSON.parse(info.response)
+                    console.log(typeof info.response)
+                    console.log("all Users ", allUsers)
+                }
+            }
+            // info.open("GET","../Data/users.json");
+            info.open("GET","http://localhost:3000/users")
+            info.send()
+        }
+
+        //Getting Data Through Fetch
+    </script>
+</body>
+</html>

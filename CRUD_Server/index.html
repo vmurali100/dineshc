@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Application With Server</title>
+    <style>
+      span {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        background: red;
+        color: white;
+        text-align: center;
+        margin-left: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      #updateUserBtn {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <form>
+      <label for="fname">First Name : </label>
+      <input type="text" name="" id="fname" /> <br />
+      <label for="lname">Last Name : </label>
+      <input type="text" id="lname" /> <br />
+      <label for="gender">Gender : </label>
+      <input type="radio" name="gender" value="Male" /> Male
+      <input type="radio" name="gender" value="Female" /> Female <br />
+      <label for="subject">Subjects :</label>
+      <input type="checkbox" name="subject" value="HTML" /> HTML
+      <input type="checkbox" name="subject" value="CSS" /> CSS
+      <input type="checkbox" name="subject" value="JS" /> JS
+      <input type="checkbox" name="subject" value="ReactJS" /> ReactJS <br />
+      <button onclick="getUserDetals()" type="button" id="getUserBtn">
+        Get User
+      </button>
+      <button id="updateUserBtn" onclick="updateUser()" type="button">
+        Update User
+      </button>
+    </form>
+    <hr />
+    <ul></ul>
+    <script>
+      var allUsers = [];
+      var radioButtons = document.getElementsByName("gender");
+      var allCheckBoxes = document.getElementsByName("subject");
+
+      function getUserDetals() {
+        var person = getUserDetailsFromForm();
+        console.log(person);
+        sendDataToServer(person);
+        // users.push(person) // Push Method will add a User Object to Users Array
+        // clearForm(person) // Calling clearForm function TO Clear The input fields
+        // displayUsersInArray() // this Function Will Display All Users In Array
+      }
+
+      function sendDataToServer(person) {
+        var info = new XMLHttpRequest();
+        info.onreadystatechange = function () {
+          if (info.readyState == 4 && info.status == 200) {
+            allUsers = JSON.parse(info.response);
+            console.log(typeof info.response);
+            console.log("all Users ", allUsers);
+          }
+        };
+        info.open("POST", "http://localhost:3000/users");
+        info.setRequestHeader("Content-Type", "application/json");
+        info.send(JSON.stringify(person));
+      }
+
+      function getUserDetailsFromForm() {
+        var person = {
+          fname: document.getElementById("fname").value,
+          lname: document.getElementById("lname").value,
+          gender: null,
+          subjects: [],
+        };
+        // Getting Both Radio Buttons
+
+        radioButtons.forEach(function (radio) {
+          if (radio.checked) {
+            person.gender = radio.value;
+          }
+        });
+        allCheckBoxes.forEach(function (element) {
+          if (element.checked) {
+            person.subjects.push(element.value);
+          }
+        });
+        return person;
+      }
+      function getAllUsersFromServer() {
+        var info = new XMLHttpRequest();
+        info.onreadystatechange = function () {
+          if (info.readyState == 4 && info.status == 200) {
+            allUsers = JSON.parse(info.response);
+            console.log("all Users ", allUsers);
+            displayUsersInArray();
+          }
+        };
+        // info.open("GET","../Data/users.json");
+        info.open("GET", "http://localhost:3000/users");
+        info.send();
+      }
+
+      getAllUsersFromServer();
+
+      function displayUsersInArray() {
+        document.querySelector("ul").innerHTML = "";
+        allUsers.map((user, i) => {
+          var element = document.createElement("li");
+          element.setAttribute("onclick", "editUser(" + i + ")");
+          element.innerHTML =
+            user.fname +
+            " " +
+            user.lname +
+            " - " +
+            user.gender +
+            " - " +
+            user.subjects +
+            "<span onclick='deleteUser(" +
+            i +
+            ")'> X </span>";
+          document.querySelector("ul").appendChild(element);
+        });
+      }
+
+      function deleteUser(i) {
+        var info = new XMLHttpRequest();
+        info.onreadystatechange = function () {
+          if (info.readyState == 4 && info.status == 200) {
+            allUsers = JSON.parse(info.response);
+            console.log("all Users ", allUsers);
+            displayUsersInArray();
+          }
+        };
+        // info.open("GET","../Data/users.json");
+        info.open("DELETE", "http://localhost:3000/users/" + allUsers[i].id);
+        info.send();
+      }
+
+      function clearForm(obj) {
+        for (a in obj) {
+          if (a !== "gender" && a !== "subjects" && a !== "id") {
+            document.getElementById(a).value = "";
+          } else if (a == "gender") {
+            radioButtons.forEach(function (radio) {
+              radio.checked = false;
+            });
+          } else {
+            allCheckBoxes.forEach(function (element) {
+              element.checked = false;
+            });
+          }
+        }
+      }
+      function editUser(i) {
+        swapBtns(true);
+        gIndex = i;
+        // display the User info in HTML Form
+        var editUser = allUsers[i];
+        clearForm(editUser);
+        for (a in editUser) {
+          if (a !== "gender" && a !== "subjects" && a !== "id") {
+            document.getElementById(a).value = editUser[a];
+          } else if (a == "gender") {
+            radioButtons.forEach((element) => {
+              console.log(element.value);
+              if (element.value == editUser[a]) {
+                element.checked = true;
+              }
+            });
+          } else if (a !== "id") {
+            allCheckBoxes.forEach((checkbox) => {
+              editUser[a].forEach((val) => {
+                if (checkbox.value == val) {
+                  checkbox.checked = true;
+                }
+              });
+            });
+          }
+        }
+      }
+
+      function swapBtns(isEdit) {
+        if (isEdit) {
+          document.getElementById("updateUserBtn").style.display = "block";
+          document.getElementById("getUserBtn").style.display = "none";
+        } else {
+          document.getElementById("updateUserBtn").style.display = "none";
+          document.getElementById("getUserBtn").style.display = "block";
+        }
+      }
+
+      function updateUser() {
+        var updatedUser = getUserDetailsFromForm();
+
+        var info = new XMLHttpRequest();
+        info.onreadystatechange = function () {
+          if (info.readyState == 4 && info.status == 200) {
+            allUsers = JSON.parse(info.response);
+            displayUsersInArray();
+            swapBtns(false);
+            clearForm(updatedUser);
+          }
+        };
+        // info.open("GET","../Data/users.json");
+        info.open("PUT", "http://localhost:3000/users/" + allUsers[gIndex].id);
+        info.setRequestHeader("Content-Type", "application/json");
+        info.send(JSON.stringify(updatedUser));
+      }
+    </script>
+  </body>
+</html>
