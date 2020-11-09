@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async And Await</title>
+</head>
+<body>
+    <script>
+        var users = []
+        function getDataFromServer(){
+            return new Promise(function (resolve, reject) {
+                var info = new XMLHttpRequest();
+                info.onreadystatechange = function () {
+                    if (info.readyState == 4 && info.status == 200) {
+                        resolve(JSON.parse(info.response))
+                        // // Thi is place will excute after getting the data from Server
+                    }
+                }
+                info.open("GET", "http://localhost:3000/users");
+                info.send()
+            })
+        }
+
+        function displayUsers() {
+            users.forEach(user=>{
+                document.write(user.fname+"<br>")
+            })
+        }
+
+        async function getAllusers(){
+            users = await getDataFromServer()
+            displayUsers(users)
+        }
+
+        getAllusers()
+        
+        // getDataFromServer().then(function (response){
+        //     displayUsers() 
+        // })
+    </script>
+</body>
+</html>
