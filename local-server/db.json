@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "fname": "Murali",
+      "lname": "Krishna KK",
+      "gender": "Male",
+      "subjects": [
+        "CSS",
+        "JS"
+      ],
+      "id": 2
+    },
+    {
+      "fname": "Hari M",
+      "lname": "krishna",
+      "gender": "Male",
+      "subjects": [
+        "HTML",
+        "ReactJS"
+      ],
+      "id": 3
+    }
+  ]
+}

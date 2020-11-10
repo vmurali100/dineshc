@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var users = []
+        function getDataFromServer() {
+            return new Promise(function (resolve, reject) {
+                var info = new XMLHttpRequest();
+                info.onreadystatechange = function () {
+                    if (info.readyState == 4 && info.status == 200) {
+                        users = JSON.parse(info.response)
+                        resolve(users)
+                        // // Thi is place will excute after getting the data from Server
+                    }
+                }
+                info.open("GET", "http://localhost:3000/users");
+                info.send()
+            })
+        }
+
+        function displayUsers() {
+            users.forEach(user=>{
+                document.write(user.fname+"<br>")
+            })
+        }
+        getDataFromServer().then(function (response){
+            console.log(response)
+            displayUsers() 
+        })
+
+        // var somePromise = new Promise(function(success,failure){
+        //     // success("Money Withdraw and distributes")
+        //     // failure("No Money Available in Bank")
+        // })
+
+        // somePromise.then(function(res){
+        //     console.log(res)
+        // })
+    </script>
+</body>
+
+</html>

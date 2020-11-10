@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise</title>
+</head>
+<body>
+    <script>
+        var users = []
+        function getDataFromServer(){
+            var info = new XMLHttpRequest();
+            info.onreadystatechange = function (){
+                if(info.readyState == 4 && info.status == 200){
+                    users = JSON.parse(info.response)
+                    console.log(users)
+                    displayUsers() // Thi is place will excute after getting the data from Server
+                }
+            }
+            info.open("GET","http://localhost:3000/users");
+            info.send()
+        }
+
+        
+
+        function displayUsers() {
+            users.forEach(user=>{
+                document.write(user.fname+"<br>")
+            })
+        }
+
+        // Passing Second as callback function to First Function
+        getDataFromServer()// Will Get the Data from Server and Assign to Users
+        //displayUsers() // Display All users
+    </script>
+</body>
+</html>
